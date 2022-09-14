@@ -4,7 +4,10 @@ class App extends Component{
     constructor() {
         super();
         this.state={
-            employeeData : []
+            title : "CRUD app",
+            employeeData : [],
+            act : 0,
+            index : ''
         }
     }
     handleSubmit= (e) => {
@@ -13,22 +16,55 @@ class App extends Component{
         let name = this.refs.txtName.value;
         let age = this.refs.txtAge.value;
 
-        let newEmployee = {
-            "name" : name,
-            "age" : age
+        if(this.state.act === 0)
+        {
+            let newEmployee = {
+                "name" : name,
+                "age" : age
+            }
+            employeeData.push(newEmployee);
         }
-        employeeData.push(newEmployee);
+        else
+        {
+            let index = this.state.index;
+            employeeData[index].name = name;
+            employeeData[index].age = age;
+        }
+
         this.setState({
-            employeeData: employeeData
+            employeeData: employeeData,
+            act : 0
         })
         this.refs.myForm.reset();
+    }
+
+    handleEdit = (i) =>{
+        let employeeData = this.state.employeeData[i];
+        this.refs.txtName.value = employeeData.name;
+        this.refs.txtAge.value = employeeData.age;
+
+        this.setState({
+            employeeData : employeeData,
+            act : 1,
+            index : i
+        })
+
+    }
+
+    handleDelete= (i) =>{
+        let employeeData = this.state.employeeData;
+        employeeData.splice(i, 1);
+        this.set.State({
+            employeeData : employeeData
+        });
     }
 
     render() {
         let employeeData = this.state.employeeData;
         return(
             <div>
-            <form ref="myForm">
+                <h1>{this.setState.title}</h1>
+                <form ref="myForm">
                 <label>Name</label>
                 <input type="text" ref="txtName"/>
                 <label>Age</label>
@@ -45,6 +81,12 @@ class App extends Component{
                     <tr key={i}>
                         <td>{data.name}</td>
                         <td>{data.age}</td>
+                        <td>
+                            <button onClick={this.handleEdit(i)}>Edit</button>
+                        </td>
+                        <td>
+                            <button onClick={this.handleDelete(i)}>Delete</button>
+                        </td>
                     </tr> )
                 }
             </tabel>
